@@ -36,31 +36,129 @@
 
 	};
 
-	var parallax = function() {
-		$(window).stellar({
-			horizontalScrolling: false,
-			hideDistantElements: false, 
-			responsive: true
+	var sliderMain = function() {
+		
+	  	$('#fh5co-hero .flexslider').flexslider({
+			animation: "fade",
+			slideshowSpeed: 5000,
+			directionNav: true,
+			start: function(){
+				setTimeout(function(){
+					$('.slider-text').removeClass('animated fadeInUp');
+					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
+				}, 500);
+			},
+			before: function(){
+				setTimeout(function(){
+					$('.slider-text').removeClass('animated fadeInUp');
+					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
+				}, 500);
+			}
 
-		});
+	  	});
+
+	  	$('#fh5co-hero .flexslider .slides > li').css('height', $(window).height());	
+	  	$(window).resize(function(){
+	  		$('#fh5co-hero .flexslider .slides > li').css('height', $(window).height());	
+	  	});
+
 	};
 
-	var testimonialCarousel = function(){
-		var owl = $('.owl-carousel-fullwidth');
-		owl.owlCarousel({
-			items: 1,
-		    loop: true,
-		    margin: 0,
-		    responsiveClass: true,
-		    nav: false,
-		    dots: true,
-		    smartSpeed: 500,
-		    autoHeight: true
-		});
+	var centerBlock = function() {
+		$('.fh5co-section-with-image .fh5co-box').css('margin-top', -($('.fh5co-section-with-image .fh5co-box').outerHeight()/2));
+	  	$(window).resize(function(){
+	  		$('.fh5co-section-with-image .fh5co-box').css('margin-top', -($('.fh5co-section-with-image .fh5co-box').outerHeight()/2));
+	  	});
+	};
+
+	var responseHeight = function() {
+		setTimeout(function(){
+			$('.js-responsive > .v-align').css('height', $('.js-responsive > img').height());
+		}, 1);
+		
+		$(window).resize(function(){
+			setTimeout(function(){
+				$('.js-responsive > .v-align').css('height', $('.js-responsive > img').height());
+			}, 1);
+		})
 	};
 
 
-	// Animations
+	var mobileMenuOutsideClick = function() {
+
+		$(document).click(function (e) {
+	    var container = $("#fh5co-offcanvas, .js-fh5co-nav-toggle");
+	    if (!container.is(e.target) && container.has(e.target).length === 0) {
+
+	    	if ( $('body').hasClass('offcanvas-visible') ) {
+
+    			$('body').removeClass('offcanvas-visible');
+    			$('.js-fh5co-nav-toggle').removeClass('active');
+				
+	    	}
+	    
+	    	
+	    }
+		});
+
+	};
+
+
+	var offcanvasMenu = function() {
+		$('body').prepend('<div id="fh5co-offcanvas" />');
+		$('#fh5co-offcanvas').prepend('<ul id="fh5co-side-links">');
+		$('body').prepend('<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>');
+		$('#fh5co-offcanvas').append($('#fh5co-header nav').clone());
+	};
+
+
+	var burgerMenu = function() {
+
+		$('body').on('click', '.js-fh5co-nav-toggle', function(event){
+			var $this = $(this);
+
+			$('body').toggleClass('fh5co-overflow offcanvas-visible');
+			$this.toggleClass('active');
+			event.preventDefault();
+
+		});
+
+		$(window).resize(function() {
+			if ( $('body').hasClass('offcanvas-visible') ) {
+		   	$('body').removeClass('offcanvas-visible');
+		   	$('.js-fh5co-nav-toggle').removeClass('active');
+		   }
+		});
+
+		$(window).scroll(function(){
+			if ( $('body').hasClass('offcanvas-visible') ) {
+		   	$('body').removeClass('offcanvas-visible');
+		   	$('.js-fh5co-nav-toggle').removeClass('active');
+		   }
+		});
+
+	};
+
+
+	var toggleBtnColor = function() {
+		if ( $('#fh5co-hero').length > 0 ) {	
+			$('#fh5co-hero').waypoint( function( direction ) {
+				if( direction === 'down' ) {
+					$('.fh5co-nav-toggle').addClass('dark');
+				}
+			} , { offset: - $('#fh5co-hero').height() } );
+
+			$('#fh5co-hero').waypoint( function( direction ) {
+				if( direction === 'up' ) {
+					$('.fh5co-nav-toggle').removeClass('dark');
+				}
+			} , { 
+				offset:  function() { return -$(this.element).height() + 0; }
+			} );
+		}
+	};
+
+
 
 	var contentWayPoint = function() {
 		var i = 0;
@@ -98,83 +196,33 @@
 		} , { offset: '85%' } );
 	};
 
-	var counter = function() {
-		$('.js-counter').countTo({
-			 formatter: function (value, options) {
-	      return value.toFixed(options.decimals);
-	    },
+	var testimonialCarousel = function(){
+		var owl = $('.owl-carousel-fullwidth');
+		owl.owlCarousel({
+			animateOut: 'fadeOut',
+			items: 1,
+			loop: true,
+			margin: 0,
+			responsiveClass: true,
+			nav: false,
+			dots: true,
+			smartSpeed: 500,
+			autoHeight: true
 		});
 	};
 
-	var counterWayPoint = function() {
-		if ($('#counter-animate').length > 0 ) {
-			$('#counter-animate').waypoint( function( direction ) {
-										
-				if( direction === 'down' && !$(this.element).hasClass('animated') ) {
-					setTimeout( counter , 400);					
-					$(this.element).addClass('animated');
-						
-				}
-			} , { offset: '90%' } );
-		}
-	};
-
-	var burgerMenu = function() {
-
-		$('.js-fh5co-nav-toggle').on('click', function(event){
-			event.preventDefault();
-			var $this = $(this);
-
-			if ($('body').hasClass('offcanvas')) {
-				$this.removeClass('active');
-				$('body').removeClass('offcanvas');	
-			} else {
-				$this.addClass('active');
-				$('body').addClass('offcanvas');	
-			}
-		});
-
-
-
-	};
-
-	// Click outside of offcanvass
-	var mobileMenuOutsideClick = function() {
-
-		$(document).click(function (e) {
-	    var container = $("#fh5co-aside, .js-fh5co-nav-toggle");
-	    if (!container.is(e.target) && container.has(e.target).length === 0) {
-
-	    	if ( $('body').hasClass('offcanvas') ) {
-
-    			$('body').removeClass('offcanvas');
-    			$('.js-fh5co-nav-toggle').removeClass('active');
-			
-	    	}
-	    	
-	    }
-		});
-
-		$(window).scroll(function(){
-			if ( $('body').hasClass('offcanvas') ) {
-
-    			$('body').removeClass('offcanvas');
-    			$('.js-fh5co-nav-toggle').removeClass('active');
-			
-	    	}
-		});
-
-	};
-
-	// Document on load.
+	
 	$(function(){
 		fullHeight();
-		parallax();
-		testimonialCarousel();
-		contentWayPoint();
-		counterWayPoint();
-		burgerMenu();
+		sliderMain();
+		centerBlock();
+		responseHeight()
 		mobileMenuOutsideClick();
+		offcanvasMenu();
+		burgerMenu();
+		toggleBtnColor();
+		contentWayPoint();
+		testimonialCarousel();
 	});
 
 
